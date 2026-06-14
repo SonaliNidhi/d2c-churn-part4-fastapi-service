@@ -1,0 +1,7 @@
+{
+    "recency_days": 120,
+    "frequency_180d": 1,
+    "monetary_180d": 900,
+    "ticket_count_90d": 5,
+    "sessions_30d": 1
+}

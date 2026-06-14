@@ -1,0 +1,18 @@
+{
+    "customers": [
+        {
+            "recency_days": 120,
+            "frequency_180d": 1,
+            "monetary_180d": 900,
+            "ticket_count_90d": 5,
+            "sessions_30d": 1
+        },
+        {
+            "recency_days": 10,
+            "frequency_180d": 8,
+            "monetary_180d": 9000,
+            "ticket_count_90d": 0,
+            "sessions_30d": 12
+        }
+    ]
+}
