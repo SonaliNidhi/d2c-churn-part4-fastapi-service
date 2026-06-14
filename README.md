@@ -82,14 +82,29 @@ uvicorn app:app --reload
 API available at:
 
 ```text
-https://jacket-upbeat-abreast.ngrok-free.dev/docs
+http://127.0.0.1:8000/doc
 ```
 
-Swagger documentation:
+## API Documentation
 
-```text
-https://jacket-upbeat-abreast.ngrok-free.dev/docs```
----
+After starting the server:
+
+```bash
+uvicorn app:app --reload
+```
+
+Open:
+
+http://127.0.0.1:8000/docs
+
+Swagger UI provides interactive documentation for:
+
+- GET /health
+- POST /predict
+- POST /batch_predict
+
+All endpoints support request validation through Pydantic models.
+
 
 ## Endpoint Details
 
