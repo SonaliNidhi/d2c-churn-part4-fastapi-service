@@ -15,22 +15,42 @@ The service returns:
 
 ---
 
+## Business Objective
+
+The goal is to help the business identify customers at risk of churn before they leave and support targeted retention interventions.
+
+This API serves as a scoring layer that can be integrated into internal CRM systems.
+
+---
+
 ## Repository Structure
 
 ```text
-app.py
-train_model.py
-model.pkl
+Project_Part-4/
 
-requirements.txt
+├── app.py
+├── train_model.py
+├── model.pkl
+├── rfm_modeling_snapshot.csv
 
-monitoring_plan.md
-responsible_use.md
+├── requirements.txt
+├── README.md
 
-test_health.py
-test_predict.py
-test_batch_predict.py
-test_invalid_input.py
+├── monitoring_plan.md
+├── responsible_use.md
+
+├── test_health.py
+├── test_predict.py
+├── test_batch_predict.py
+├── test_invalid_input.py
+
+├── outputs/
+│   ├── swagger_home.png
+│   ├── health_response.png
+│   ├── predict_response.png
+│   ├── batch_predict_response.png
+│   ├── predict_response.json
+│   └── batch_predict_response.json
 ```
 
 ---
@@ -45,9 +65,13 @@ Target variable:
 
 * churn_next_60d
 
+Important Leakage Prevention:
+
 Only information available on or before the customer snapshot date is used for model training.
 
 No post-snapshot information is used as model input.
+
+This complies with the capstone leakage-prevention requirements.
 
 ---
 
@@ -82,29 +106,28 @@ uvicorn app:app --reload
 API available at:
 
 ```text
-http://127.0.0.1:8000/doc
+http://127.0.0.1:8000
 ```
+
+Swagger Documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
 
 ## API Documentation
 
-After starting the server:
-
-```bash
-uvicorn app:app --reload
-```
-
-Open:
-
-http://127.0.0.1:8000/docs
-
 Swagger UI provides interactive documentation for:
 
-- GET /health
-- POST /predict
-- POST /batch_predict
+* GET /health
+* POST /predict
+* POST /batch_predict
 
 All endpoints support request validation through Pydantic models.
 
+---
 
 ## Endpoint Details
 
@@ -116,7 +139,7 @@ Example Response:
 
 ```json
 {
-    "status":"ok"
+  "status": "ok"
 }
 ```
 
@@ -130,11 +153,11 @@ Example Request:
 
 ```json
 {
-    "recency_days":120,
-    "frequency_180d":2,
-    "monetary_180d":1500,
-    "ticket_count_90d":4,
-    "sessions_30d":1
+  "recency_days": 120,
+  "frequency_180d": 2,
+  "monetary_180d": 1500,
+  "ticket_count_90d": 4,
+  "sessions_30d": 1
 }
 ```
 
@@ -142,10 +165,10 @@ Example Response:
 
 ```json
 {
-    "churn_probability":0.81,
-    "predicted_class":1,
-    "risk_level":"high",
-    "risk_explanation":"high inactivity, multiple complaints, low engagement"
+  "churn_probability": 0.81,
+  "predicted_class": 1,
+  "risk_level": "high",
+  "risk_explanation": "inactive customer, high complaint volume, low engagement"
 }
 ```
 
@@ -159,22 +182,22 @@ Example Request:
 
 ```json
 {
-    "customers":[
-        {
-            "recency_days":120,
-            "frequency_180d":2,
-            "monetary_180d":1500,
-            "ticket_count_90d":4,
-            "sessions_30d":1
-        },
-        {
-            "recency_days":10,
-            "frequency_180d":8,
-            "monetary_180d":9000,
-            "ticket_count_90d":0,
-            "sessions_30d":12
-        }
-    ]
+  "customers": [
+    {
+      "recency_days": 120,
+      "frequency_180d": 2,
+      "monetary_180d": 1500,
+      "ticket_count_90d": 4,
+      "sessions_30d": 1
+    },
+    {
+      "recency_days": 10,
+      "frequency_180d": 8,
+      "monetary_180d": 9000,
+      "ticket_count_90d": 0,
+      "sessions_30d": 12
+    }
+  ]
 }
 ```
 
@@ -195,6 +218,26 @@ Included Tests:
 
 ---
 
+## API Execution Evidence
+
+The outputs folder contains:
+
+* swagger_home.png
+* health_response.png
+* predict_response.png
+* batch_predict_response.png
+
+These screenshots demonstrate successful execution of the API endpoints.
+
+JSON response examples are also included:
+
+* predict_response.json
+* batch_predict_response.json
+
+These files provide evidence that the API was executed successfully and returned valid prediction responses.
+
+---
+
 ## Monitoring
 
 See:
@@ -206,8 +249,8 @@ monitoring_plan.md
 The monitoring plan covers:
 
 * Data drift
-* Prediction drift
-* API errors
+* Prediction distribution drift
+* API failures and latency
 * Business outcomes
 * Retraining triggers
 
@@ -221,16 +264,38 @@ See:
 responsible_use.md
 ```
 
-The model should only be used to support retention campaigns.
+The model should only be used to support customer-retention activities.
 
-The model should not be used for:
+The model should NOT be used for:
 
 * Credit decisions
 * Employment decisions
 * Legal decisions
 * Service denial
+* Customer discrimination
 
-Human review is recommended before taking action on high-risk predictions.
+Predictions should support human decision-making rather than replace it.
+
+---
+
+## Reproducibility
+
+The repository includes:
+
+* Source data
+* Model training script
+* Saved model artifact
+* API code
+* Automated tests
+* Requirements file
+
+A reviewer can reproduce the workflow by:
+
+```bash
+pip install -r requirements.txt
+python train_model.py
+uvicorn app:app --reload
+```
 
 ---
 
@@ -247,3 +312,11 @@ Run Container:
 ```bash
 docker run -p 8000:8000 churn-api
 ```
+
+---
+
+## Author Notes
+
+This project was developed as Part 4 of the D2C Customer Churn Intelligence & Retention API Capstone Project.
+
+The API exposes machine-learning churn predictions in a format suitable for CRM integration and retention decision support.
